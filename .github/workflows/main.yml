@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Debug repository info
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Private: ${{ github.event.repository.private }}"
+      
+      - name: Fail if repository is private
+        run: |
+          echo "❌ This check should not run for public repositories"
+          echo "If you see this, there's an issue with visibility detection"
+          exit 1
+        if: ${{ github.event.repository.private == true }}
+      
+      - name: Tests
+        uses: Yandex-Practicum/test-project-action@v1
+        with:
+          project: 'posmotri-v-okno-ad'
